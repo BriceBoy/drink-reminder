@@ -63,6 +63,13 @@ dossier d'installation :
 - `water-reminder.log` : diagnostic, avec rotation limitée à trois fichiers.
 - `water.ico` : icône persistante pour l'identité Windows.
 
+À la première utilisation, la liste fournie de **100 messages** est copiée dans
+le fichier utilisateur : bienveillance, encouragements, humour, jeux de mots,
+conseils sobres et invitations plus directes. Un fichier personnel existant n'est
+jamais écrasé. Pour adopter cette liste dans une installation existante, copiez
+le contenu de `water_reminder\assets\messages.json` dans
+`%APPDATA%\WaterReminder\messages.json` après avoir sauvegardé vos messages.
+
 Exemple de `messages.json` :
 
 ```json

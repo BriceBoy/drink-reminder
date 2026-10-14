@@ -6,7 +6,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 from water_reminder.config import Settings, SettingsStore, write_json
-from water_reminder.messages import DEFAULT_MESSAGES, MessageCatalog
+from water_reminder.messages import MessageCatalog
+from water_reminder.paths import resource_directory
 from water_reminder.reminders import ReminderEngine
 
 
@@ -230,9 +231,18 @@ class MessagesTests(unittest.TestCase):
         write_json(self.path, {"messages": messages})
 
     def test_initial_defaults(self) -> None:
-        self.assertEqual(
-            json.loads(self.path.read_text(encoding="utf-8"))["messages"], list(DEFAULT_MESSAGES)
-        )
+        bundled = json.loads((resource_directory() / "messages.json").read_text(encoding="utf-8"))[
+            "messages"
+        ]
+        self.assertEqual(json.loads(self.path.read_text(encoding="utf-8"))["messages"], bundled)
+        self.assertEqual(len(bundled), 100)
+        self.assertEqual(len(set(bundled)), 100)
+        self.assertTrue(all("{name}" in text for text in bundled))
+
+    def test_initialize_preserves_custom_messages(self) -> None:
+        self.save(["Mon message pour {name}"])
+        self.catalog.initialize()
+        self.assertEqual(self.catalog.next_message("Brice"), "Mon message pour Brice")
 
     def test_markers_personalization_and_live_reload(self) -> None:
         self.save(["Salut {name} / {name}"])

@@ -6,6 +6,7 @@ from pathlib import Path
 from string import Formatter
 
 from .config import write_json
+from .paths import resource_directory
 
 LOGGER = logging.getLogger(__name__)
 DEFAULT_MESSAGES = (
@@ -51,7 +52,9 @@ class MessageCatalog:
 
     def initialize(self) -> None:
         if not self.path.exists():
-            write_json(self.path, {"messages": list(DEFAULT_MESSAGES)})
+            bundled = resource_directory() / "messages.json"
+            messages = validate_messages(json.loads(bundled.read_text(encoding="utf-8-sig")))
+            write_json(self.path, {"messages": messages})
 
     def next_message(self, name: str) -> str:
         try:
