@@ -218,9 +218,18 @@ powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Installer
 powershell -ExecutionPolicy Bypass -File .\scripts\package.ps1
 ```
 
-Le script recherche `ISCC.exe` dans le PATH, puis dans
-`C:\Program Files (x86)\Inno Setup 6`. Si Inno Setup est ailleurs, ajoutez son
+Le script vérifie la présence d'`ISCC.exe` avant de commencer un build avec
+installateur. Il recherche dans le PATH, les dossiers Program Files et
+`%LOCALAPPDATA%\Programs\Inno Setup 6`. Si Inno Setup est ailleurs, ajoutez son
 dossier au PATH de la session. Il exécute les tests et Ruff avant la compilation.
+
+Si Inno Setup 6 n'est pas installé :
+
+```powershell
+winget install --id JRSoftware.InnoSetup --exact --source winget --interactive
+```
+
+Terminez l'assistant d'installation, puis relancez le build avec `-Installer`.
 Ne contournez pas les restrictions PowerShell de votre organisation.
 
 Commandes élémentaires équivalentes :
