@@ -1,0 +1,10 @@
+{
+  "messages": [
+    "Bonjour {name} ! Une petite pause pour boire de l'eau ?",
+    "{name}, pense à t'hydrater ! Ton corps te remerciera.",
+    "C'est l'heure du verre d'eau, {name} !",
+    "Petite pause hydratation pour {name} !",
+    "{name}, quelques gorgées d'eau et on repart !",
+    "N'oublie pas de boire régulièrement, {name} !"
+  ]
+}
