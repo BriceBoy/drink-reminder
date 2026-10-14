@@ -33,7 +33,7 @@ sur le bureau. Elle teste :
 - retour de veille sans rafale, arrêt puis redémarrage pour un délai complet ;
 - mutex **réel entre deux processus Windows**, puis libération ;
 - interface Tkinter : validation, sauvegarde, annulation ;
-- resources graphiques décodables, XML natif avec image et deux boutons ;
+- icône décodable, XML natif sans image et avec deux boutons ;
 - erreurs explicites si Windows désactive les notifications.
 
 Le script `test_native.py` est une recette interactive séparée. Les boutons doivent
@@ -56,7 +56,7 @@ mesurés correspondent à 2700 et 600 secondes. Un délai sans clic est un éche
 
 ### Notifications natives
 
-- [ ] Utiliser **Tester une notification** et contrôler prénom, illustration,
+- [ ] Utiliser **Tester une notification** et contrôler prénom, absence d'illustration,
   titre et les deux boutons (développer la notification si nécessaire).
 - [ ] Exécuter `scripts\test_native.py` : cliquer « J'ai bu ! », puis « Rappeler
   dans 10 min » ; les deux lignes PASS doivent être présentes.

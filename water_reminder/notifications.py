@@ -1,13 +1,10 @@
 from collections.abc import Callable
-from pathlib import Path
 
 from windows_toasts import (
     InteractableWindowsToaster,
     Toast,
     ToastActivatedEventArgs,
     ToastButton,
-    ToastDisplayImage,
-    ToastImagePosition,
 )
 from windows_toasts.toast_document import ToastDocument
 from winrt.windows.data.xml.dom import XmlDocument
@@ -27,8 +24,6 @@ def build_document(toast: Toast) -> XmlDocument:
     document.SetAttribute(document.GetElementByTagName("toast"), "launch", toast.tag)
     for index, text in enumerate(toast.text_fields):
         document.SetTextFieldStatic(index, text or "")
-    for image in toast.images:
-        document.AddImage(image)
     for action in toast.actions:
         document.AddAction(action)
     return document.xmlDocument
@@ -37,13 +32,11 @@ def build_document(toast: Toast) -> XmlDocument:
 class Notifications:
     def __init__(
         self,
-        image: Path,
         activated: Callable[[str, Action], None],
         failed: Callable[[str, str], None],
         open_settings: Callable[[], None],
         app_id: str = APP_ID,
     ) -> None:
-        self.image = image
         self.activated = activated
         self.failed = failed
         self.open_settings = open_settings
@@ -55,11 +48,6 @@ class Notifications:
     def show(self, reminder: Reminder, message: str) -> None:
         self.clear()
         toast = Toast(["Petite pause hydratation", message])
-        toast.AddImage(
-            ToastDisplayImage.fromPath(
-                self.image, altText="Un verre d'eau et une goutte", position=ToastImagePosition.Hero
-            )
-        )
         toast.AddAction(ToastButton("J'ai bu !", "drink"))
         toast.AddAction(ToastButton("Rappeler dans 10 min", "snooze"))
 

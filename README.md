@@ -92,13 +92,13 @@ Les sauvegardes utilisent un fichier temporaire puis un remplacement atomique.
 - **pystray 0.19.5** : zone de notification Win32, dans un thread dédié. Tkinter
   reste sur le thread principal ; une file transfère les événements Windows.
   Le backend Windows est utilisable hors du thread principal selon sa documentation.
-- **Windows-Toasts 1.3.1** avec **PyWinRT 3.2.1** : vrais toasts Windows avec image
-  locale, deux boutons et événements d'activation. La documentation et les
+- **Windows-Toasts 1.3.1** avec **PyWinRT 3.2.1** : vrais toasts Windows sans
+  illustration, avec deux boutons et événements d'activation. La documentation et les
   métadonnées annoncent Windows 10/11 et Python 3.12. Une identité AUMID
   `BriceBoy.WaterReminder` est enregistrée dans HKCU afin de prendre en charge
   notamment les actions depuis le centre de notifications. L'objet SDK est
   conservé pour fermer explicitement le bandeau, en plus du nettoyage de l'historique.
-- **Pillow 11.3.0** : images originales générées localement, pas d'image téléchargée.
+- **Pillow 11.3.0** : icône originale générée localement, pas d'image téléchargée.
 - **PyInstaller 6.16.0** : exécutable unique, sans console. Les ressources et
   modules WinRT sont explicitement collectés.
 - **Inno Setup 6** : installation x64 par utilisateur, identité stable pour les
@@ -254,7 +254,6 @@ drink-reminder\
     assets\
       water.ico
       water.png
-      hydration.png
       messages.json
   installer\
     WaterReminder.iss

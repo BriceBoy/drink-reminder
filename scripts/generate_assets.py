@@ -28,14 +28,6 @@ def main() -> None:
     droplet(draw, 62, 20, 132, "#168ed1")
     icon.save(ASSETS / "water.png")
     icon.save(ASSETS / "water.ico", sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (256, 256)])
-    hero = Image.new("RGB", (720, 360), "#e8f5fc")
-    draw = ImageDraw.Draw(hero)
-    draw.ellipse((410, 40, 700, 330), fill="#d3ecf9")
-    draw.rounded_rectangle((105, 64, 292, 303), radius=24, fill="white", outline="#168ed1", width=8)
-    draw.rounded_rectangle((118, 160, 279, 289), radius=16, fill="#68c3ed")
-    draw.ellipse((118, 150, 279, 183), fill="#9eddfa")
-    droplet(draw, 457, 55, 139, "#168ed1")
-    hero.save(ASSETS / "hydration.png")
 
 
 if __name__ == "__main__":

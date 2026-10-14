@@ -22,7 +22,6 @@ def main() -> int:
     register_application(resource_directory() / "water.ico", app_id)
     engine = ReminderEngine(Settings("Test", 45, False, True))
     notifications = Notifications(
-        resource_directory() / "hydration.png",
         activated=lambda token, action: events.put((token, action)),
         failed=lambda token, error: events.put(("error", error)),
         open_settings=lambda: events.put(("body", "body")),

@@ -49,7 +49,6 @@ class Application:
         shutil.copyfile(resource_directory() / "water.ico", icon)
         register_application(icon)
         self.notifications = Notifications(
-            resource_directory() / "hydration.png",
             activated=lambda token, action: self.post(lambda: self.action(token, action)),
             failed=lambda token, error: self.post(lambda: self.notification_failed(token, error)),
             open_settings=lambda: self.post(self.open_settings),

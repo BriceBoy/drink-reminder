@@ -50,21 +50,18 @@ class WindowsTests(unittest.TestCase):
         from winrt.windows.ui.notifications import NotificationSetting
 
         from water_reminder.notifications import Notifications
-        from water_reminder.paths import resource_directory
         from water_reminder.reminders import Reminder
 
         with patch("water_reminder.notifications.InteractableWindowsToaster") as factory:
             toaster = factory.return_value
             toaster.toastNotifier.setting = NotificationSetting.ENABLED
             activated, failed, opened = MagicMock(), MagicMock(), MagicMock()
-            notifications = Notifications(
-                resource_directory() / "hydration.png", activated, failed, opened
-            )
+            notifications = Notifications(activated, failed, opened)
             notifications.show(Reminder("token", "Brice"), "Bonjour Brice <&> !")
             toast = notifications.current
             native = notifications.native
             toaster.toastNotifier.show.assert_called_once_with(native)
-            self.assertEqual(len(toast.images), 1)
+            self.assertEqual(toast.images, [])
             self.assertEqual([action.arguments for action in toast.actions], ["drink", "snooze"])
             self.assertEqual(
                 [action.content for action in toast.actions], ["J'ai bu !", "Rappeler dans 10 min"]
@@ -86,14 +83,11 @@ class WindowsTests(unittest.TestCase):
         from winrt.windows.ui.notifications import NotificationSetting
 
         from water_reminder.notifications import Notifications
-        from water_reminder.paths import resource_directory
         from water_reminder.reminders import Reminder
 
         with patch("water_reminder.notifications.InteractableWindowsToaster") as factory:
             factory.return_value.toastNotifier.setting = NotificationSetting.DISABLED_FOR_USER
-            notifications = Notifications(
-                resource_directory() / "hydration.png", MagicMock(), MagicMock(), MagicMock()
-            )
+            notifications = Notifications(MagicMock(), MagicMock(), MagicMock())
             with self.assertRaisesRegex(RuntimeError, "désactivées"):
                 notifications.show(Reminder("token", "Brice"), "Bonjour Brice")
 
@@ -101,19 +95,16 @@ class WindowsTests(unittest.TestCase):
         from winrt.windows.ui.notifications import NotificationSetting
 
         from water_reminder.notifications import Notifications, build_document
-        from water_reminder.paths import resource_directory
         from water_reminder.reminders import Reminder
 
         with patch("water_reminder.notifications.InteractableWindowsToaster") as factory:
             factory.return_value.toastNotifier.setting = NotificationSetting.ENABLED
-            notifications = Notifications(
-                resource_directory() / "hydration.png", MagicMock(), MagicMock(), MagicMock()
-            )
+            notifications = Notifications(MagicMock(), MagicMock(), MagicMock())
             notifications.show(Reminder("token", "Brice"), "Brice <&> !")
             xml = build_document(notifications.current).get_xml()
             self.assertIn("ToastGeneric", xml)
             self.assertIn("&lt;&amp;&gt;", xml)
-            self.assertIn('placement="hero"', xml)
+            self.assertNotIn("<image", xml)
             self.assertEqual(xml.count("<action "), 2)
 
     def test_settings_dialog_validates_saves_and_cancels(self) -> None:
@@ -149,7 +140,7 @@ class WindowsTests(unittest.TestCase):
 
         from water_reminder.paths import resource_directory
 
-        for filename in ("water.ico", "water.png", "hydration.png"):
+        for filename in ("water.ico", "water.png"):
             with Image.open(Path(resource_directory()) / filename) as image:
                 image.verify()
 
