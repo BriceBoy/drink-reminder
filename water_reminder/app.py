@@ -6,6 +6,7 @@ import sys
 import threading
 import tkinter as tk
 from collections.abc import Callable
+from datetime import datetime, timedelta
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from tkinter import messagebox
@@ -190,12 +191,15 @@ class Application:
     def show_reminder(self, reminder: Reminder) -> None:
         message = self.catalog.next_message(reminder.name)
         self.notifications.show(reminder, message)
-        LOGGER.info("Rappel envoyé")
+        LOGGER.info("Rappel envoyé, prochain rappel vers %s", self.next_time())
+
+    def next_time(self) -> str:
+        return (datetime.now() + timedelta(seconds=self.engine.remaining())).strftime("%H:%M:%S")
 
     def action(self, token: str, action: Action) -> None:
         if self.engine.act(token, action):
             self.notifications.clear()
-            LOGGER.info("Action de rappel : %s", action)
+            LOGGER.info("Action de rappel : %s, prochain rappel vers %s", action, self.next_time())
         else:
             LOGGER.info("Action périmée ignorée")
 

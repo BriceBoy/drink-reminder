@@ -60,8 +60,8 @@ mesurés correspondent à 2700 et 600 secondes. Un délai sans clic est un éche
   titre et les deux boutons (développer la notification si nécessaire).
 - [ ] Exécuter `scripts\test_native.py` : cliquer « J'ai bu ! », puis « Rappeler
   dans 10 min » ; les deux lignes PASS doivent être présentes.
-- [ ] Refaire la recette en laissant le bandeau disparaître, puis cliquer les
-  boutons depuis le centre de notifications (Win+N sous Windows 11).
+- [ ] Attendre 30 secondes sans cliquer : le bandeau doit rester à l'écran, puis
+  un clic doit être pris en compte (ligne « Action de rappel » dans le journal).
 - [ ] Vérifier disparition du rappel après chaque action.
 - [ ] Régler 1 minute pour vérifier un déclenchement automatique sans clic.
 - [ ] Reporter, puis vérifier le temps restant proche de **10 minutes**, quelle

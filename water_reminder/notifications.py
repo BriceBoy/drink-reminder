@@ -21,7 +21,11 @@ from .reminders import Action, Reminder
 def build_document(toast: Toast) -> XmlDocument:
     document = ToastDocument(toast)
     document.SetAttribute(document.bindingNode, "template", "ToastGeneric")
-    document.SetAttribute(document.GetElementByTagName("toast"), "launch", toast.tag)
+    root = document.GetElementByTagName("toast")
+    document.SetAttribute(root, "launch", toast.tag)
+    # Without this scenario, the banner vanishes after a few seconds and clicks made later
+    # from the notification center never reach this non-packaged application.
+    document.SetAttribute(root, "scenario", "reminder")
     for index, text in enumerate(toast.text_fields):
         document.SetTextFieldStatic(index, text or "")
     for action in toast.actions:

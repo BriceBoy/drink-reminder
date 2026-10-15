@@ -105,6 +105,7 @@ class WindowsTests(unittest.TestCase):
             self.assertIn("ToastGeneric", xml)
             self.assertIn("&lt;&amp;&gt;", xml)
             self.assertNotIn("<image", xml)
+            self.assertIn('scenario="reminder"', xml)
             self.assertEqual(xml.count("<action "), 2)
 
     def test_settings_dialog_validates_saves_and_cancels(self) -> None:

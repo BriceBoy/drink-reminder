@@ -40,7 +40,7 @@ Le clic principal sur la goutte ouvre aussi les paramètres.
 |---|---|
 | « J'ai bu ! » | Ferme le rappel et repart pour l'intervalle configuré, depuis le clic traité. |
 | « Rappeler dans 10 min » | Ferme le rappel et repart pour **600 secondes**, sans changer l'intervalle habituel. |
-| Rappel ignoré ou fermé | Un nouveau rappel est envoyé après l'intervalle habituel. La disparition du bandeau n'est pas un acquittement. |
+| Rappel ignoré ou fermé | Le rappel reste affiché à l'écran jusqu'à un clic (scénario Windows « reminder »). Sans clic, un nouveau rappel le remplace après l'intervalle habituel, compté depuis son affichage. |
 | Nouvel intervalle validé | Annule l'ancien rappel/report et repart du moment de validation. En pause, le nouveau délai attend la reprise. |
 | Nouveau prénom validé | Retire l'ancien rappel, conserve le délai et personnalise les prochaines notifications. |
 | Pause | Retire le rappel et fige le temps restant. |
@@ -102,9 +102,12 @@ Les sauvegardes utilisent un fichier temporaire puis un remplacement atomique.
 - **Windows-Toasts 1.3.1** avec **PyWinRT 3.2.1** : vrais toasts Windows sans
   illustration, avec deux boutons et événements d'activation. La documentation et les
   métadonnées annoncent Windows 10/11 et Python 3.12. Une identité AUMID
-  `BriceBoy.WaterReminder` est enregistrée dans HKCU afin de prendre en charge
-  notamment les actions depuis le centre de notifications. L'objet SDK est
+  `BriceBoy.WaterReminder` est enregistrée dans HKCU. Les rappels utilisent le
+  scénario `reminder` : le bandeau reste à l'écran jusqu'à un clic, car sans
+  activateur COM les clics faits plus tard depuis le centre de notifications
+  ne parviennent pas à l'application. L'objet SDK est
   conservé pour fermer explicitement le bandeau, en plus du nettoyage de l'historique.
+  Le journal indique l'heure du prochain rappel après chaque envoi et chaque action.
 - **Pillow 11.3.0** : icône originale générée localement, pas d'image téléchargée.
 - **PyInstaller 6.16.0** : exécutable unique, sans console. Les ressources et
   modules WinRT sont explicitement collectés.
