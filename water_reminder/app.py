@@ -21,7 +21,13 @@ from .notifications import Notifications
 from .paths import APP_NAME, data_directory, launch_command, resource_directory
 from .reminders import Action, Reminder, ReminderEngine
 from .ui import SettingsDialog, configure_style, remaining_text
-from .windows import SingleInstance, native_error, register_application, set_autostart
+from .windows import (
+    SingleInstance,
+    native_error,
+    register_application,
+    session_locked,
+    set_autostart,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,6 +45,8 @@ class Application:
         self.engine = ReminderEngine(self.settings)
         self.dialog: SettingsDialog | None = None
         self.running = True
+        self.was_locked = False
+        self.lock_error_logged = False
         self.tray: pystray.Icon | None = None
         self.tray_thread: threading.Thread | None = None
         self.catalog = MessageCatalog(
@@ -126,7 +134,14 @@ class Application:
             while not self.commands.empty() and self.running:
                 self.commands.get_nowait()()
             if self.running:
-                reminder = self.engine.tick()
+                if self.check_lock():
+                    reminder = None
+                elif self.was_locked:
+                    self.was_locked = False
+                    reminder = self.engine.unlocked()
+                    LOGGER.info("Session déverrouillée")
+                else:
+                    reminder = self.engine.tick()
                 if reminder is not None:
                     self.show_reminder(reminder)
                 if self.dialog is not None:
@@ -137,6 +152,19 @@ class Application:
         finally:
             if self.running:
                 self.root.after(250, self.pump)
+
+    def check_lock(self) -> bool:
+        try:
+            locked = session_locked()
+        except OSError:
+            if not self.lock_error_logged:
+                LOGGER.exception("Impossible de lire l'état de verrouillage de la session")
+                self.lock_error_logged = True
+            return False
+        if locked and not self.was_locked:
+            LOGGER.info("Session verrouillée, rappels différés jusqu'au déverrouillage")
+            self.was_locked = True
+        return locked
 
     def status(self) -> str:
         remaining = remaining_text(self.engine.remaining())

@@ -32,6 +32,11 @@ class WindowsTests(unittest.TestCase):
         )
         self.assertEqual(result.stdout.strip(), "True")
 
+    def test_session_lock_state_is_readable(self) -> None:
+        from water_reminder.windows import session_locked
+
+        self.assertIs(session_locked(), False)
+
     def test_autostart_quotes_command_and_can_disable(self) -> None:
         from water_reminder import windows
 
@@ -157,6 +162,7 @@ class WindowsTests(unittest.TestCase):
                 patch("water_reminder.app.set_autostart"),
                 patch("water_reminder.app.Notifications") as factory,
                 patch("water_reminder.app.messagebox.showinfo") as info,
+                patch("water_reminder.app.session_locked", return_value=False) as locked,
             ):
                 app = Application(directory)
                 try:
@@ -174,6 +180,20 @@ class WindowsTests(unittest.TestCase):
                     app.pump()
                     self.assertGreater(app.engine.remaining(), 599)
                     self.assertLessEqual(app.engine.remaining(), 600)
+                    locked.return_value = True
+                    app.engine.deadline = app.engine.clock()
+                    app.pump()
+                    self.assertEqual(factory.return_value.show.call_count, 1)
+                    locked.return_value = False
+                    app.pump()
+                    self.assertEqual(factory.return_value.show.call_count, 2)
+                    self.assertGreater(app.engine.remaining(), 59)
+                    app.pump()
+                    self.assertEqual(factory.return_value.show.call_count, 2)
+                    locked.side_effect = OSError("WTS indisponible")
+                    app.pump()
+                    self.assertTrue(app.running)
+                    locked.side_effect = None
                     menu = {str(item.text): item for item in app.tray.menu}
                     menu["Afficher le prochain rappel"](app.tray)
                     app.pump()

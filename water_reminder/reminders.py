@@ -45,6 +45,14 @@ class ReminderEngine:
         self.deadline = self.clock() + self.settings.interval_minutes * 60
         return Reminder(self.active_token, self.settings.name)
 
+    def unlocked(self) -> Reminder | None:
+        """Re-show an unanswered or overdue reminder; its interval restarts from the unlock."""
+        if self.stopped or self.paused:
+            return None
+        if self.active_token is None and self.clock() < self.deadline:
+            return None
+        return self.remind_now()
+
     def act(self, token: str, action: Action) -> bool:
         if action not in ("drink", "snooze"):
             raise ValueError(f"Action de rappel inconnue : {action}")

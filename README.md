@@ -41,6 +41,7 @@ Le clic principal sur la goutte ouvre aussi les paramètres.
 | « J'ai bu ! » | Ferme le rappel et repart pour l'intervalle configuré, depuis le clic traité. |
 | « Rappeler dans 10 min » | Ferme le rappel et repart pour **600 secondes**, sans changer l'intervalle habituel. |
 | Rappel ignoré ou fermé | Le rappel reste affiché à l'écran jusqu'à un clic (scénario Windows « reminder »). Sans clic, un nouveau rappel le remplace après l'intervalle habituel, compté depuis son affichage. |
+| PC verrouillé | Aucun rappel n'est envoyé pendant le verrouillage. Au déverrouillage, un rappel arrivé à échéance ou resté sans réponse est réaffiché, et l'intervalle repart de ce moment. Le minuteur ne repart pour l'intervalle complet qu'au clic sur « J'ai bu ! ». |
 | Nouvel intervalle validé | Annule l'ancien rappel/report et repart du moment de validation. En pause, le nouveau délai attend la reprise. |
 | Nouveau prénom validé | Retire l'ancien rappel, conserve le délai et personnalise les prochaines notifications. |
 | Pause | Retire le rappel et fige le temps restant. |

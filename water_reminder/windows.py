@@ -64,6 +64,40 @@ def set_autostart(enabled: bool, command: list[str]) -> None:
                 pass  # An absent Run value is already the requested state.
 
 
+wtsapi32 = ctypes.WinDLL("wtsapi32", use_last_error=True)
+wtsapi32.WTSQuerySessionInformationW.argtypes = (
+    wintypes.HANDLE,
+    wintypes.DWORD,
+    ctypes.c_int,
+    ctypes.POINTER(ctypes.c_void_p),
+    ctypes.POINTER(wintypes.DWORD),
+)
+wtsapi32.WTSQuerySessionInformationW.restype = wintypes.BOOL
+wtsapi32.WTSFreeMemory.argtypes = (ctypes.c_void_p,)
+wtsapi32.WTSFreeMemory.restype = None
+
+WTS_CURRENT_SESSION = 0xFFFFFFFF
+WTS_SESSION_INFO_EX = 25
+WTS_SESSIONSTATE_LOCK = 0
+# WTSINFOEXW: Level (DWORD), then WTSINFOEX_LEVEL1_W aligned on 8 bytes because of its
+# LARGE_INTEGER members: SessionId, SessionState, SessionFlags.
+SESSION_FLAGS_OFFSET = 16
+
+
+def session_locked() -> bool:
+    buffer = ctypes.c_void_p()
+    size = wintypes.DWORD()
+    if not wtsapi32.WTSQuerySessionInformationW(
+        None, WTS_CURRENT_SESSION, WTS_SESSION_INFO_EX, ctypes.byref(buffer), ctypes.byref(size)
+    ):
+        raise ctypes.WinError(ctypes.get_last_error())
+    try:
+        flags = ctypes.c_long.from_address(buffer.value + SESSION_FLAGS_OFFSET).value
+    finally:
+        wtsapi32.WTSFreeMemory(buffer)
+    return flags == WTS_SESSIONSTATE_LOCK
+
+
 def native_error(message: str) -> None:
     user32 = ctypes.WinDLL("user32", use_last_error=True)
     user32.MessageBoxW.argtypes = (wintypes.HWND, wintypes.LPCWSTR, wintypes.LPCWSTR, wintypes.UINT)

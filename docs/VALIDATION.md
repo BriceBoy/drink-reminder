@@ -68,6 +68,9 @@ mesurés correspondent à 2700 et 600 secondes. Un délai sans clic est un éche
   que soit la durée normale ; tester un second report.
 - [ ] Fermer un rappel avec X : le délai habituel continue, pas de boucle immédiate.
 - [ ] Ignorer plusieurs rappels : un seul rappel applicatif dans le centre.
+- [ ] Régler 1 minute, verrouiller (Win+L) plus d'une minute puis déverrouiller :
+  le rappel s'affiche aussitôt ; le journal contient « Session verrouillée » et
+  « Session déverrouillée ».
 - [ ] Changer l'intervalle pendant un report : le nouveau délai remplace le report.
 - [ ] Changer le prénom : le rappel ancien est retiré ; le prochain utilise le nouveau.
 - [ ] Pause : aucun rappel ; reprise : le temps figé reprend.

@@ -116,6 +116,24 @@ class ReminderTests(unittest.TestCase):
         self.assertIsNone(self.engine.tick())
         self.assertEqual(self.engine.remaining(), 2700)
 
+    def test_unlock_reshows_overdue_or_unanswered_reminder(self) -> None:
+        self.assertIsNone(self.engine.unlocked())
+        self.clock.advance(3000)
+        overdue = self.engine.unlocked()
+        self.assertIsNotNone(overdue)
+        self.assertEqual(self.engine.remaining(), 2700)
+        self.clock.advance(100)
+        again = self.engine.unlocked()
+        self.assertIsNotNone(again)
+        self.assertFalse(self.engine.act(overdue.token, "drink"))
+        self.clock.advance(20)
+        self.assertTrue(self.engine.act(again.token, "drink"))
+        self.assertEqual(self.engine.remaining(), 2700)
+        self.assertIsNone(self.engine.unlocked())
+        self.engine.pause()
+        self.clock.advance(5000)
+        self.assertIsNone(self.engine.unlocked())
+
     def test_drink_resets_from_click(self) -> None:
         reminder = self.due()
         self.clock.advance(13)
